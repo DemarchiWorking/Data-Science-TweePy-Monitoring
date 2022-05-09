@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <title>Tweetpy</title>
+
+    </head>
+    <body>
+
+    <a href="/"><button> Voltar </button></a>
+
+    <style type="text/css">
+    html, body {
+        height: 100%;
+        margin: 0px;
+    }
+    .container {
+        height: 78%;
+    }
+    .footer{
+        height:12%;
+        background-color: #222222;
+    }
+    </style>
+
+    <main class="container">
+
+            <table class="table">
+                    <thead>
+                        <tr style="border:1px black">
+                                <th scope="col">Usuário</th>
+                                <th scope="col">Tweet</th>
+                                <th scope="col">Id Usuário</th>
+                                <th scope="col">Id</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for tweet in tweetsByTag %}
+                                <tr>
+                                        <th scope="row"> {{ tweet.username }} </th>
+                                        <td>{{ tweet.tweet }}</td>
+                                        <td>{{ tweet.idUser }}</td>
+                                        <td>{{ tweet.id }}</td>
+                                        <td>-</td>
+
+                                </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+    </main>
+ </body>
+</html>

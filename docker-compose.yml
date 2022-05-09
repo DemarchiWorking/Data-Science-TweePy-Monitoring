@@ -2,7 +2,7 @@ version: "2"
 services:
   app:
     build: ./app
-    container_name: "Flask_App"
+    container_name: "appTweepy"
     links:
       - db
     ports:
@@ -10,10 +10,22 @@ services:
 
   db:
     image: mysql:5.7
-    container_name: "MySQL_Database"
+    container_name: "dbTweepy"
     ports:
       - "32000:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - ./db:/docker-entrypoint-initdb.d/:ro
+
+  api:
+    build: 
+      context: ClientTweepy
+      dockerfile: ClientTweepy/Dockerfile
+    container_name: net-container
+    environment:
+      - "DB_PORT=3306"
+    restart: always
+    ports:
+      - 8088:80  
+   

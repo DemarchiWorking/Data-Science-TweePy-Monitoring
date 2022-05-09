@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <title>Title</title>
+    </head>
+    <body>
+    <style type="text/css">
+    html, body {
+        height: 100%;
+        margin: 0px;
+    }
+    .container {
+        height: 78%;
+    }
+    .footer{
+        height:12%;
+        background-color: #222222;
+    }
+    </style>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+
+            <!-- logo -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#mainNavBar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand"> TWEETPY</a>
+            </div>
+
+            <!-- menu itens -->
+            <div class="collapse navbar-collapse" id="mainNavBar">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/"> Inicio</a></li>
+                    <li><a href="funcoes">Funcionalidades</a></li>
+                    <li><a href="contatos">Contato</a></li>
+                </ul>
+           </div>
+        </div>
+    </nav>
+
+    <main class="container">
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div>
+                <h1> Tweets por Tema</h1>
+            </div>
+
+            <form action="/cadastrarTweet" method="post">
+                <div> Buscar por:
+                <input class="form-control input-lg" name="tag" type="text" placeholder="Tag">
+
+                    <div class="col-xs-6">
+                        De:
+                        <input type="datetime-local" name="initialDate" class="form-control" placeholder="Data inicio">
+                    </div>
+                    <div class="col-xs-6">
+                        Até:
+                        <input type="datetime-local" name="finalDate" class="form-control" placeholder="Data final">
+                    </div>
+                </div>
+                <button type="submit" style="margin-top:90px" class="btn btn-default btn-lg btn-block"> Buscar / Salvar </button>
+            </form>
+        </div>
+        </div>
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+    </main>
+    </body>
+    <blockquote class="footer" class="blockquote-reverse">
+          <div style="text-align:center;"><a href="https://www.linkedin.com/in/demarchi1/" target="_blank"> <i class='fa fa-linkedin'></i></a></div>
+    </blockquote>
+</html>
