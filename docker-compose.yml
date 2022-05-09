@@ -28,4 +28,15 @@ services:
     restart: always
     ports:
       - 8088:80  
-   
+  
+  front:
+    build: ./clientfront
+    volumes:
+      - ./volumefront:/var/www/html
+    container_name: react-container    
+    restart: always
+    ports:
+    - 80:3000
+
+    depends_on:
+    - db

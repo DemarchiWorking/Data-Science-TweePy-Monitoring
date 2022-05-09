@@ -88,6 +88,7 @@ namespace ClientTweepy.Controllers
                 {
                     return Ok(new Response()
                     {
+                        isSuccess = true,
                         Title = "Nenhum tweet com data de criação foi encontrado!",
                         Status = 204
                     });
@@ -96,6 +97,7 @@ namespace ClientTweepy.Controllers
                 {
                     return Ok(new Response()
                     {
+                        isSuccess = true,
                         Title = "Lista tweets por hora encontrada com sucesso!",
                         Status = 200,
                         List = response.List
@@ -105,6 +107,7 @@ namespace ClientTweepy.Controllers
                 {
                     return BadRequest(new Response()
                     {
+                        isSuccess = false,
                         Title = "Não foi possivel encontrar a lista de tweets por hora!",
                         Status = 400
                     });
@@ -112,7 +115,7 @@ namespace ClientTweepy.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"[FunctionController] Exception in PostsGroupedByHour!");
+                _logger.Error(ex, $"[FunctionController] Exception in TweetsGroupedByHour!");
             }
             return StatusCode(StatusCodes.Status500InternalServerError,
               new Response()
@@ -135,6 +138,8 @@ namespace ClientTweepy.Controllers
                 {
                     return Ok(new Response()
                     {
+                        isEmpty = true,
+                        isSuccess = true,
                         Title = "Nenhum tweet com idioma foi localizado!",
                         Status = 204
                     });
@@ -143,6 +148,7 @@ namespace ClientTweepy.Controllers
                 {
                     return Ok(new Response()
                     {
+                        isSuccess = true,
                         Title = "Lista de quantidade de tweets por idioma encontrado com sucesso!",
                         Status = 200,
                         List = response.List
@@ -152,6 +158,7 @@ namespace ClientTweepy.Controllers
                 {
                     return BadRequest(new Response()
                     {
+                        isSuccess = false,
                         Title = "Não foi possivel encontrar a lista de quantidade de tweets por idioma!",
                         Status = 400
                     });

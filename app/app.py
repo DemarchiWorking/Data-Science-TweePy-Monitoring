@@ -14,6 +14,7 @@ from  flask_sqlalchemy import SQLAlchemy
 import json
 import re
 import datetime
+import socket
 
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
@@ -27,6 +28,7 @@ access_token_secret = "UVi5aGFL3j7Cwous2gsvcbFQ2QN5aqUzw2tT0kppvXiNe"
 Client = tweepy.Client(bearer_token, consumer_key, consumer_secret, access_token, access_token_secret)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@db/tweetpy?charset=utf8mb4'
 db = SQLAlchemy(app)
+timeout = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 class User(db.Model):
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
@@ -107,7 +109,6 @@ def tweetAndAuthor():
     return result
 
 def userMostFollowers(tweets):
-    #userInfo = Client.get_user(id=tweets.idUser, user_fields='public_metrics')
     headers = CaseInsensitiveDict()
     headers["Accept"] = "application/json"
     headers["Authorization"] = "Bearer "+bearer_token
@@ -118,7 +119,8 @@ def userMostFollowers(tweets):
 @app.route('/lista-sugestao-tweets')
 def lastTweetList():
     tweetsByTag = tweetAndAuthor()
-    for tweets in tweetsByTag[:70]:                             #só pega os primeiros 10
+    timeout.settimeout(5.0)
+    for tweets in tweetsByTag[:70]:                             #só pega os primeiros
         print(tweets)
         user_info = userMostFollowers(tweets)
         if(str(user_info) == "<Response [429]>"):

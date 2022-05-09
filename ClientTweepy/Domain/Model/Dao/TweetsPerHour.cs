@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Model.Dao
 {
-    public class AmountPerHour
+    public class TweetsPerHour
     {
         public int hour { get; set; }
         public int count { get; set; }

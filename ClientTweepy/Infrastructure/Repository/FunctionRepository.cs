@@ -102,11 +102,11 @@ namespace Infrastructure.Repository
 
                 if (result != null && result.ToList().Count > 0) 
                 {
-                    List<AmountPerHour> list = new List<AmountPerHour>();
+                    List<TweetsPerHour> list = new List<TweetsPerHour>();
 
                     result.ToList<dynamic>().ForEach(it =>
                     {
-                        list.Add(new AmountPerHour
+                        list.Add(new TweetsPerHour
                         {
                             hour = Convert.ToInt32(it.HOUR),
                             count = Convert.ToInt32(it.COUNT)
@@ -201,7 +201,140 @@ namespace Infrastructure.Repository
 
             return null;
         }
+        
+        public Response InsertDbTopFollowersUsersList(User user, int rank)
+        {
+            try
+            {
+                string query = $@"
+                                   INSERT INTO TOP_USERS
+                                     (
+                                                    ID_USER
+                                                    , USERNAME
+                                                    , FOLLOWERS
+                                                    , FOLLOWING
+                                                    , RANK
+                                                    )
+                                                    VALUES
+                                                    (
+                                                    '{Convert.ToString(user.idUser)}'
+                                                    , '{Convert.ToString(user.username)}'
+                                                    , '{Convert.ToInt32(user.followersCount)}'
+                                                    , '{Convert.ToInt32(user.followedCount)}'
+                                                    , '{Convert.ToInt32(rank)}'
+                                      )";
 
+                var result = _connection.Execute(query);
+
+                if (result != 0)
+                {
+                    return new Response()
+                    {
+                        isSuccess = true
+                    };
+                }
+                else
+                {
+                    return new Response()
+                    {
+                        isSuccess = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"[FunctionRepository] Exception in InsertDbTopFollowersUsersList!");
+
+            }
+
+            return null;
+        }
+        public Response InsertDbTweetsGroupedByHour(TweetsPerHour tweetsPerHour)
+        {
+            try
+            {
+                string query = $@"
+                                   INSERT INTO TWEETS_PER_HOUR
+                                     (
+                                                    HOUR
+                                                    , COUNT_TWEETS
+                                                    )
+                                                    VALUES
+                                                    (
+                                                    '{tweetsPerHour.hour}'
+                                                    , '{tweetsPerHour.count}'
+                                      )";
+
+                var result = _connection.Execute(query);
+
+                if (result != 0)
+                {
+                    return new Response()
+                    {
+                        isSuccess = true
+                    };
+                }
+                else
+                {
+                    return new Response()
+                    {
+                        isSuccess = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"[FunctionRepository] Exception in InsertDbTweetsGroupedByHour!");
+
+            }
+
+            return null;
+        }
+
+
+        public Response InsertDbNumberTweetPerLanguage(CountTweetPerTagAndLang countTweetPerTagAndLang)
+        {
+            try
+            {
+                string query = $@"              
+                                INSERT INTO NUMBER_TWEET_PER_LANGUAGE
+                                     (
+                                                    TAG
+                                                    , LANG
+                                                    , COUNT_TWEET
+                                                    )
+                                                    VALUES
+                                                    (
+                                                    '{Convert.ToString(countTweetPerTagAndLang.tag)}'
+                                                    , '{Convert.ToString(countTweetPerTagAndLang.lang)}'
+                                                    , '{Convert.ToInt32(countTweetPerTagAndLang.count)}'
+                                      )";
+
+                var result = _connection.Execute(query);
+
+                if (result != 0)
+                {
+                    return new Response()
+                    {
+                        isSuccess = true
+                    };
+                }
+                else
+                {
+                    return new Response()
+                    {
+                        isSuccess = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"[FunctionRepository] Exception in InsertDbNumberTweetPerLanguage!");
+
+            }
+
+            return null;
+        }
     }
 
 }

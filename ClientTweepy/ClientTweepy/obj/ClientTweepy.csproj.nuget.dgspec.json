@@ -109,6 +109,10 @@
               "target": "Package",
               "version": "[1.14.0, )"
             },
+            "NEST": {
+              "target": "Package",
+              "version": "[7.17.1, )"
+            },
             "Serilog": {
               "target": "Package",
               "version": "[2.11.0, )"
