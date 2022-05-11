@@ -37,7 +37,7 @@ access_token_secret = "UVi5aGFL3j7Cwous2gsvcbFQ2QN5aqUzw2tT0kppvXiNe"
 
 Client = tweepy.Client(bearer_token, consumer_key, consumer_secret, access_token, access_token_secret)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/tweetpy?charset=utf8mb4'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@db/sys?charset=utf8mb4'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@db/tweetpy?charset=utf8mb4'
 db = SQLAlchemy(app)
 
 class User(db.Model):                                                       #classe usuário com ORM
