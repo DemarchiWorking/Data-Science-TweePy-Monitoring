@@ -1,0 +1,133 @@
+
+.main{
+    align-items: center;
+    text-align: center;
+    
+    margin-left: auto;
+    margin-right: auto;
+}
+.containerPrincipal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    
+}
+.containerSecundario{
+    text-align: center;
+}
+
+main header {
+    display: flex;
+}
+
+.cards .card h2 {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 500px;
+    
+}
+
+img {
+    width: 20px;
+    margin-left: 40px;
+
+    cursor: pointer;
+}
+
+.modal {
+    width: 80px;
+    height: 100px;
+    background-color: white;
+}
+
+main .cards{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+}
+
+main .cards .card {
+    margin: 0 auto;
+
+    background-color: #2F3644;
+
+    padding: 30px 40px;
+    width: 600px;
+
+    border-radius: 7px;
+
+}
+
+.cards .card header {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.card header h2 {
+    font-family: Noto Sans;
+    font-weight: 700;
+
+    color: #D2DAF5;
+
+    font-size: 1.7rem;
+}
+
+.line {
+    background-color: #3E445B;
+    height: 2px;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    
+    max-width: 500px;
+
+    font-family: Noto Sans;
+    font-weight: 500;
+
+    color: #B3BACF;
+}
+
+.btns {
+    display: flex;
+}
+
+.btns button {
+    width: 160px;
+    color: rgba(255, 255, 255, 0.938);
+    font-size: 1.3rem;
+    border: 0;
+
+    border-radius: 10px;
+
+    font-family: Heebo;
+    font-weight: 700;
+    
+    cursor: pointer;
+
+    padding: 5px 40px;
+}
+
+.btn-editar button{
+    background-color: #80D8FF;
+}
+
+.btn-ler button{
+    background-color: #3DECB1;
+    
+}
+
+.btn-deletar button{
+    background-color: rgb(241, 45, 45);
+}
+
+.loading {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
