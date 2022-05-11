@@ -2,6 +2,7 @@
 using Domain.Model.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 using Serilog;
 using System;
 
@@ -13,16 +14,17 @@ namespace ClientTweepy.Controllers
     {
         private readonly ILogger _logger;
         private readonly IFunctionService _functionService;
-
+        private readonly IElasticClient _elasticClient;
 
         public FunctionController(
             ILogger logger,
-            IFunctionService functionService
-
+            IFunctionService functionService,
+            IElasticClient elasticClient
             )
         {
             _logger = logger;
             _functionService = functionService;
+            _elasticClient = elasticClient;
         }
 
 
@@ -57,10 +59,12 @@ namespace ClientTweepy.Controllers
                 }
                 if (response.isSuccess == false)
                 {
+                    _logger.Warning($"[TopFollowersUsersList] Request [BadRequest]!");
                     return BadRequest(new Response()
                     {
                         Title = "Não foi possivel encontrar a lista de top usuários!",
                         Status = 400
+
                     });
                 }
             }
@@ -105,6 +109,7 @@ namespace ClientTweepy.Controllers
                 }
                 if (response.isSuccess == false)
                 {
+                    _logger.Warning($"[TweetsGroupedByHour] Request [BadRequest]!");
                     return BadRequest(new Response()
                     {
                         isSuccess = false,
@@ -156,6 +161,7 @@ namespace ClientTweepy.Controllers
                 }
                 if (response.isSuccess == false)
                 {
+                    _logger.Warning($"[NumberTweetPerLanguage] Request [BadRequest]!");
                     return BadRequest(new Response()
                     {
                         isSuccess = false,

@@ -7,3 +7,6 @@ datetime
 bootstrap-flask
 flask-sqlalchemy
 mysqlclient
+opencensus-ext-flask
+opencensus-ext-azure
+

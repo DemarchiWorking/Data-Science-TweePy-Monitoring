@@ -228,6 +228,7 @@ namespace Infrastructure.Repository
 
                 if (result != 0)
                 {
+                    _logger.Information($"[TopFollowersUsersList] Request [DBRegister]!");
                     return new Response()
                     {
                         isSuccess = true
@@ -269,6 +270,7 @@ namespace Infrastructure.Repository
 
                 if (result != 0)
                 {
+                    _logger.Information($"[InsertDbTweetsGroupedByHour] Request [DBRegister]!");
                     return new Response()
                     {
                         isSuccess = true
@@ -314,6 +316,7 @@ namespace Infrastructure.Repository
 
                 if (result != 0)
                 {
+                    _logger.Information($"[InsertDbNumberTweetPerLanguage] Request [DBRegister]!");
                     return new Response()
                     {
                         isSuccess = true

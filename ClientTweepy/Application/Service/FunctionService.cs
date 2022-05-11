@@ -28,6 +28,7 @@ namespace Application.Service
                 var response = _functionRepository.TopFollowersUsersList();
 
                 var rank = 1;
+                if(response.List != null) {
                 foreach (var item in response.List)
                 {
                     User payload = new User();
@@ -38,6 +39,7 @@ namespace Application.Service
 
                     var insertDb = _functionRepository.InsertDbTopFollowersUsersList(payload, rank);
                     rank++;
+                    }
                 }
 
                 return response;
@@ -55,15 +57,17 @@ namespace Application.Service
             {
                 var response = _functionRepository.TweetsGroupedByHour();
 
-                foreach (var item in response.List)
+                if (response.List != null)
                 {
-                    TweetsPerHour payload = new TweetsPerHour();
-                    payload.hour = Convert.ToInt32(item.hour);
-                    payload.count = Convert.ToInt32(item.count);
+                    foreach (var item in response.List)
+                    {
+                        TweetsPerHour payload = new TweetsPerHour();
+                        payload.hour = Convert.ToInt32(item.hour);
+                        payload.count = Convert.ToInt32(item.count);
 
-                    var insertDb = _functionRepository.InsertDbTweetsGroupedByHour(payload);
+                        var insertDb = _functionRepository.InsertDbTweetsGroupedByHour(payload);
+                    }
                 }
-
                 return response;
 
             }
@@ -80,15 +84,18 @@ namespace Application.Service
             {
                 var response = _functionRepository.NumberTweetPerLanguage();
 
-                foreach (var item in response.List)
+                if (response.List != null)
                 {
+                    foreach (var item in response.List)
+                    {
 
-                    CountTweetPerTagAndLang payload = new CountTweetPerTagAndLang();
-                    payload.tag = Convert.ToString(item.tag);
-                    payload.lang = Convert.ToString(item.lang);
-                    payload.count = Convert.ToInt32(item.count);
+                        CountTweetPerTagAndLang payload = new CountTweetPerTagAndLang();
+                        payload.tag = Convert.ToString(item.tag);
+                        payload.lang = Convert.ToString(item.lang);
+                        payload.count = Convert.ToInt32(item.count);
 
-                    var insertDb = _functionRepository.InsertDbNumberTweetPerLanguage(payload);
+                        var insertDb = _functionRepository.InsertDbNumberTweetPerLanguage(payload);
+                    }
                 }
 
                 return response;

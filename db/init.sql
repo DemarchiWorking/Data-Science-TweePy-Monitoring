@@ -3,9 +3,9 @@ use tweetpy;
 
 
 CREATE TABLE IF NOT EXISTS tweepy(
-                        ID_TWEET INTEGER AUTO_INCREMENT PRIMARY KEY,
-						TWEET VARCHAR(900) NOT NULL,
-						ID_USER INTEGER
+                        ID_TWEET INTEGER AUTO_INCREMENT PRIMARY KEY
+						, TWEET VARCHAR(900) NOT NULL
+						, ID_USER INTEGER
 						)
 
 

@@ -1,0 +1,86 @@
+version: "2"
+services:
+  app:
+    build: ./app
+    container_name: "appTweepy"
+    links:
+      - db
+    ports:
+      - "5000:5000"
+
+  db:
+    image: mysql:5.7
+    container_name: "dbTweepy"
+    ports:
+      - "32000:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+
+  api:
+    build: 
+      context: ClientTweepy
+      dockerfile: ClientTweepy/Dockerfile
+    container_name: net-container
+    environment:
+      - "DB_PORT=3306"
+    restart: always
+    ports:
+      - 8088:80  
+  
+  front:
+    build: ./clientfront
+    volumes:
+      - ./volumefront:/var/www/html
+    container_name: react-container    
+    restart: always
+    ports:
+    - 80:3000
+
+    depends_on:
+    - db
+
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
+    container_name: es01
+    environment: 
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - cluster.initial_master_nodes=es01
+    #  - bootstrap.memory_lock=true   #REMOVE
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"      
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:      
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+
+  kib01:
+    image: docker.elastic.co/kibana/kibana:7.9.0
+    container_name: kib01
+    ports:
+    - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOST: http://es01:9200
+    links:
+      - es01   
+    depends_on:
+      - es01
+    networks:
+      - elastic    
+    
+volumes:
+  data01:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge

@@ -118,3 +118,13 @@ C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskP
 C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\obj\Debug\net5.0\ClientTweepy.pdb
 C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\obj\Debug\net5.0\ClientTweepy.genruntimeconfig.cache
 C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\obj\Debug\net5.0\ref\ClientTweepy.dll
+C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\bin\Debug\net5.0\Elasticsearch.Net.dll
+C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\bin\Debug\net5.0\Nest.dll
+C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\bin\Debug\net5.0\Serilog.Formatting.Elasticsearch.dll
+C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\bin\Debug\net5.0\Serilog.Sinks.Elasticsearch.dll
+C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\bin\Debug\net5.0\Serilog.Sinks.PeriodicBatching.dll
+C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\bin\Debug\net5.0\Serilog.Enrichers.Environment.dll
+C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\bin\Debug\net5.0\Prometheus.NetCore.dll
+C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\bin\Debug\net5.0\Prometheus.NetStandard.dll
+C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\bin\Debug\net5.0\Prometheus.AspNetCore.dll
+C:\Users\AntonioEduardoSilvei\Documents\Programacao\Python\IT\PythonDockerFlaskPycharm\PythonDockerFlaskPycharm\ClientTweepy\ClientTweepy\bin\Debug\net5.0\prometheus-net.DotNetRuntime.dll

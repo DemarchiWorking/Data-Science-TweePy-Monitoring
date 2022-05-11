@@ -15,8 +15,17 @@ import json
 import re
 import datetime
 import socket
+from opencensus.ext.azure.trace_exporter import AzureExporter
+from opencensus.ext.flask.flask_middleware import FlaskMiddleware
+from opencensus.trace.samplers import ProbabilitySampler
 
 app = Flask(__name__)
+middleware = FlaskMiddleware(
+    app,
+    exporter=AzureExporter(connection_string='InstrumentationKey=6d69c826-89fb-4275-80b3-f2f4a7f41638;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'),
+    sampler=ProbabilitySampler(rate=1.0)
+)
+
 bootstrap = Bootstrap5(app)
 
 bearer_token = "AAAAAAAAAAAAAAAAAAAAAFrtcAEAAAAAp%2BCUCE7LXUtCgpOxJATpeJE%2F3C0%3DHdVbnoO9BjPdSVOnHIxDxR7IMOMkKLm7Si1GM6E5Lqwqr5Sil1"
@@ -28,22 +37,21 @@ access_token_secret = "UVi5aGFL3j7Cwous2gsvcbFQ2QN5aqUzw2tT0kppvXiNe"
 Client = tweepy.Client(bearer_token, consumer_key, consumer_secret, access_token, access_token_secret)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@db/tweetpy?charset=utf8mb4'
 db = SQLAlchemy(app)
-timeout = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-class User(db.Model):
+class User(db.Model):                                                       #classe usuário com ORM
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
     idUser = db.Column(db.String(50))
+    #idUser = db.Column(db.Integer, ForeignKey ( 'Tweet.idUser' )
     username = db.Column(db.String(150))
     followersCount = db.Column(db.Integer)
     followedCount = db.Column(db.Integer)
-
     def __init__(self, idUser, username, followersCount, followedCount):
         self.idUser = idUser
         self.username = username
         self.followersCount = followersCount
         self.followedCount = followedCount
 
-class Tweet(db.Model):
+class Tweet(db.Model):                                                         #classe tweet com ORM
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
     idUser = db.Column(db.String(50))
     username = db.Column(db.String(100))
@@ -51,7 +59,6 @@ class Tweet(db.Model):
     createdAt = db.Column(db.DateTime)
     lang = db.Column(db.String(100))
     tag = db.Column(db.String(150))
-
     def __init__(self, idUser, username, tweet, createdAt, lang, tag):
         self.idUser = idUser
         self.username = username
@@ -62,22 +69,15 @@ class Tweet(db.Model):
 
 db.create_all()
 
-def tweetByTagAndDate(tag, initialDate, finalDate):
-    result =  []
-    #initialDate1 = initialDate.strftime("%Y-%m-%dT%H:%M:%SZ")
-    #finalDate1 = finalDate.strftime("%Y-%m-%dT%H:%M:%SZ")
-    dfdt = '2022-05-02 00:00:00'
-    start_date = '2022-05-01T00:00:00Z'
-    end_date = '2022-05-07T15:00:00Z'
+def tweetByTagAndDate(tag):
+    result =  []                                                                                                                                                                #inserir data futuramente >> #initialDate1 = initialDate.strftime("%Y-%m-%dT%H:%M:%SZ")  #start_date = '2022-05-01T00:00:00Z'#query = Client.search_recent_tweets(query=tag, tweet_fields=['context_annotations', 'created_at','lang'], start_time=start_date, end_time=end_date,#finalDate1 = finalDate.strftime("%Y-%m-%dT%H:%M:%SZ") #end_date = '2022-05-07T15:00:00Z'timeout = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #timeout.settimeout(5.0)
 
-    #query = Client.search_recent_tweets(query=tag, tweet_fields=['context_annotations', 'created_at','lang'], start_time=start_date, end_time=end_date,
     query = Client.search_recent_tweets(query=tag, tweet_fields=['context_annotations', 'created_at','lang'],
                                             user_fields=['profile_image_url'], expansions='author_id', max_results=100)
 
-
     users = {u["id"]: u for u in query.includes['users']}
     for tweet in query.data:
-        print(tweet)
         if users[tweet.author_id]:
             user = users[tweet.author_id]
             tweet = Tweet(tweet.author_id, str(user), str(tweet.text), tweet["created_at"].strftime('%Y-%m-%d %H:%M:%S'), tweet["lang"], tag)
@@ -119,8 +119,7 @@ def userMostFollowers(tweets):
 @app.route('/lista-sugestao-tweets')
 def lastTweetList():
     tweetsByTag = tweetAndAuthor()
-    timeout.settimeout(5.0)
-    for tweets in tweetsByTag[:70]:                             #só pega os primeiros
+    for tweets in tweetsByTag[:50]:
         print(tweets)
         user_info = userMostFollowers(tweets)
         if(str(user_info) == "<Response [429]>"):
@@ -158,7 +157,7 @@ def registerTweet():
         result =tweetByTagAndDate(tag, initialDate, finalDate)
 
         #loop nos tweets com requisicao no perfil e cadastro deles no banco
-        for tweets in result[:70]:  # só pega os primeiros
+        for tweets in result[:50]:  # só pega os primeiros
             user_info = userMostFollowers(tweets)
             if (str(user_info) == "<Response [429]>"):
                 return redirect(url_for('many'))
@@ -187,9 +186,9 @@ def registerTweet():
 
     return render_template("registerTweet.html")
 
-
 @app.route('/')
 def index():
+    logger()
     return render_template("index.html")
 
 @app.route('/contatos')
@@ -200,18 +199,29 @@ def contact():
 def function():
     return render_template("function.html")
 
-@app.route('/itau')
-def itau():
-    result = tweetByTagAndDate("#itau", '2022-05-01T00:00:00Z','2022-05-08T20:00:00Z')
-    return render_template("listTweetByTag.html", result=result)
+
 
 @app.route('/many')
 def many():
     return render_template("many.html")
 
-@app.route('/list')
-def list():
-    return render_template("listTweetsBySuggestion.html")
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+
+def logger():
+    app.logger.debug('This is a debug log message.')
+    app.logger.info('This is an information log message.')
+    app.logger.warning('This is a warning log message.')
+    app.logger.error('This is an error message.')
+    app.logger.critical('This is a critical message.')
+
+    return "EnviarLog"
+
+@app.route('/error')
+def error():
+    a = 42
+    b = 0
+    c =a/b
+    return "a / b = {c}".format(c=c)
+
+
+if __name__ 
