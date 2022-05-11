@@ -19,6 +19,7 @@ from opencensus.ext.azure.trace_exporter import AzureExporter
 from opencensus.ext.flask.flask_middleware import FlaskMiddleware
 from opencensus.trace.samplers import ProbabilitySampler
 
+
 app = Flask(__name__)
 middleware = FlaskMiddleware(
     app,
@@ -35,7 +36,8 @@ access_token = "1521978959612719104-DtWsrzojFZInEzXoCvrttzCJsvyVcu"
 access_token_secret = "UVi5aGFL3j7Cwous2gsvcbFQ2QN5aqUzw2tT0kppvXiNe"
 
 Client = tweepy.Client(bearer_token, consumer_key, consumer_secret, access_token, access_token_secret)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@db/tweetpy?charset=utf8mb4'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/tweetpy?charset=utf8mb4'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@db/sys?charset=utf8mb4'
 db = SQLAlchemy(app)
 
 class User(db.Model):                                                       #classe usuário com ORM
@@ -69,97 +71,77 @@ class Tweet(db.Model):                                                         #
 
 db.create_all()
 
+class Response:
+    def __init__(self, statusCode, list):
+        self.statusCode = statusCode
+        self.list = list
+
 def tweetByTagAndDate(tag):
-    result =  []                                                                                                                                                                #inserir data futuramente >> #initialDate1 = initialDate.strftime("%Y-%m-%dT%H:%M:%SZ")  #start_date = '2022-05-01T00:00:00Z'#query = Client.search_recent_tweets(query=tag, tweet_fields=['context_annotations', 'created_at','lang'], start_time=start_date, end_time=end_date,#finalDate1 = finalDate.strftime("%Y-%m-%dT%H:%M:%SZ") #end_date = '2022-05-07T15:00:00Z'timeout = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #timeout.settimeout(5.0)
-
-    query = Client.search_recent_tweets(query=tag, tweet_fields=['context_annotations', 'created_at','lang'],
-                                            user_fields=['profile_image_url'], expansions='author_id', max_results=100)
-
-    users = {u["id"]: u for u in query.includes['users']}
-    for tweet in query.data:
-        if users[tweet.author_id]:
-            user = users[tweet.author_id]
-            tweet = Tweet(tweet.author_id, str(user), str(tweet.text), tweet["created_at"].strftime('%Y-%m-%d %H:%M:%S'), tweet["lang"], tag)
-            db.session.add(tweet)
-            db.session.commit()
-            result.append(tweet)
-
-    return result
-
-def tweetAndAuthor():
-    result =  []
-    tagList = ['#openbanking', '#remediation', '#devops', '#sre', '#microservices', '#observability', '#oauth',
-               '#metrics', '#logmonitoring', '#opentracing']
-
-    for i in range(9):
-        query = Client.search_recent_tweets(query=tagList[i], tweet_fields=['context_annotations', 'created_at','lang'],
-                                            user_fields=['profile_image_url'], expansions='author_id', max_results=100)
-
+    try:
+        result =  []
+        query = Client.search_recent_tweets(query=tag, tweet_fields=['context_annotations', 'created_at','lang'],
+                                                user_fields=['profile_image_url'], expansions='author_id', max_results=100)
 
         users = {u["id"]: u for u in query.includes['users']}
         for tweet in query.data:
             if users[tweet.author_id]:
                 user = users[tweet.author_id]
-                tweet = Tweet(tweet.author_id, str(user), str(tweet.text), tweet["created_at"].strftime('%Y-%m-%d %H:%M:%S'), tweet["lang"], tagList[i])
+                tweet = Tweet(tweet.author_id, str(user), str(tweet.text), tweet["created_at"].strftime('%Y-%m-%d %H:%M:%S'), tweet["lang"], tag)
                 db.session.add(tweet)
                 db.session.commit()
                 result.append(tweet)
 
-    return result
+        return result
+    except:
+        app.logger.critical('[tweetByTagAndDate] Exception')
+        return render_template("error.html")
+
+def tweetAndAuthor():
+    try:
+        result =  []
+        tagList = ['#openbanking', '#remediation', '#devops', '#sre', '#microservices', '#observability', '#oauth',
+                   '#metrics', '#logmonitoring', '#opentracing']
+
+        for i in range(9):
+            query = Client.search_recent_tweets(query=tagList[i], tweet_fields=['context_annotations', 'created_at','lang'],
+                                                user_fields=['profile_image_url'], expansions='author_id', max_results=100)
+
+
+            users = {u["id"]: u for u in query.includes['users']}
+            for tweet in query.data:
+                if users[tweet.author_id]:
+                    user = users[tweet.author_id]
+                    tweet = Tweet(tweet.author_id, str(user), str(tweet.text), tweet["created_at"].strftime('%Y-%m-%d %H:%M:%S'), tweet["lang"], tagList[i])
+                    db.session.add(tweet)
+                    db.session.commit()
+                    result.append(tweet)
+
+        return result
+    except:
+        app.logger.critical('[tweetAndAuthor] Exception')
+        return render_template("error.html")
 
 def userMostFollowers(tweets):
-    headers = CaseInsensitiveDict()
-    headers["Accept"] = "application/json"
-    headers["Authorization"] = "Bearer "+bearer_token
-    userInfo = requests.get("https://api.twitter.com/2/users/"+str(tweets.idUser)+"?user.fields=public_metrics",headers=headers)
-    return userInfo
+    try:
+        headers = CaseInsensitiveDict()
+        headers["Accept"] = "application/json"
+        headers["Authorization"] = "Bearer "+bearer_token
+        userInfo = requests.get("https://api.twitter.com/2/users/"+str(tweets.idUser)+"?user.fields=public_metrics",headers=headers)
+        return userInfo
+
+    except:
+        app.logger.critical('[userMostFollowers] Exception')
+        return "Erro"
 
 
 @app.route('/lista-sugestao-tweets')
 def lastTweetList():
-    tweetsByTag = tweetAndAuthor()
-    for tweets in tweetsByTag[:50]:
-        print(tweets)
-        user_info = userMostFollowers(tweets)
-        if(str(user_info) == "<Response [429]>"):
-            return redirect(url_for('many'))
-
-        user_info = json.loads(user_info.content.decode('utf-8'))
-        print(user_info)
-        username = user_info['data']['username']
-        followersCount = user_info['data']['public_metrics']['followers_count']
-        followedCount = user_info['data']['public_metrics']['following_count']
-
-        existUser = User.query.filter_by(idUser=tweets.idUser).first()
-
-        if (existUser is None):
-            user = User(tweets.idUser, username, followersCount, followedCount)
-            db.session.add(user)
-
-        else:
-            existUser.username = username
-            existUser.followersCount = followersCount
-            existUser.followedCount = followedCount
-            User.query.all()
-
-    db.session.commit()
-
-    return render_template("listTweetsBySuggestion.html",user_info=user_info, tweetsByTag=tweetsByTag)
-
-@app.route('/cadastrarTweet', methods=['GET', 'POST'])
-def registerTweet():
-
-    if request.method == 'POST':
-        tag = request.form.get('tag')
-        initialDate = request.form.get('initialDate')
-        finalDate = request.form.get('finalDate')
-        result =tweetByTagAndDate(tag, initialDate, finalDate)
-
-        #loop nos tweets com requisicao no perfil e cadastro deles no banco
-        for tweets in result[:50]:  # só pega os primeiros
+    try:
+        tweetsByTag = tweetAndAuthor()
+        for tweets in tweetsByTag[:50]:
+            print(tweets)
             user_info = userMostFollowers(tweets)
-            if (str(user_info) == "<Response [429]>"):
+            if(str(user_info) == "<Response [429]>"):
                 return redirect(url_for('many'))
 
             user_info = json.loads(user_info.content.decode('utf-8'))
@@ -181,14 +163,55 @@ def registerTweet():
                 User.query.all()
 
         db.session.commit()
+    except:
+        app.logger.critical('[userMostFollowers] Exception')
+        return render_template("error.html")
 
-        return render_template("listTweetByTag.html", result=result)
+    return render_template("listTweetsBySuggestion.html",user_info=user_info, tweetsByTag=tweetsByTag)
 
-    return render_template("registerTweet.html")
+@app.route('/cadastrarTweet', methods=['GET', 'POST'])
+def registerTweet():
+
+        if request.method == 'POST':
+            tag = request.form.get('tag')
+            initialDate = request.form.get('initialDate')
+            finalDate = request.form.get('finalDate')
+            result =tweetByTagAndDate(tag)
+
+            #loop nos tweets com requisicao no perfil e cadastro deles no banco
+            for tweets in result[:50]:  # só pega os primeiros
+                user_info = userMostFollowers(tweets)
+                if (str(user_info) == "<Response [429]>"):
+                    return redirect(url_for('many'))
+
+                user_info = json.loads(user_info.content.decode('utf-8'))
+                print(user_info)
+                username = user_info['data']['username']
+                followersCount = user_info['data']['public_metrics']['followers_count']
+                followedCount = user_info['data']['public_metrics']['following_count']
+
+                existUser = User.query.filter_by(idUser=tweets.idUser).first()
+
+                if (existUser is None):
+                    user = User(tweets.idUser, username, followersCount, followedCount)
+                    db.session.add(user)
+
+                else:
+                    existUser.username = username
+                    existUser.followersCount = followersCount
+                    existUser.followedCount = followedCount
+                    User.query.all()
+
+            db.session.commit()
+
+            return render_template("listTweetByTag.html", result=result)
+
+        return render_template("registerTweet.html")
+
+
 
 @app.route('/')
 def index():
-    logger()
     return render_template("index.html")
 
 @app.route('/contatos')
@@ -199,13 +222,14 @@ def contact():
 def function():
     return render_template("function.html")
 
-
+@app.route('/itau')
+def itau():
+    result = tweetByTagAndDate("#itau", '2022-05-01T00:00:00Z','2022-05-08T20:00:00Z')
+    return render_template("listTweetByTag.html", result=result)
 
 @app.route('/many')
 def many():
     return render_template("many.html")
-
-
 
 def logger():
     app.logger.debug('This is a debug log message.')
@@ -216,12 +240,7 @@ def logger():
 
     return "EnviarLog"
 
-@app.route('/error')
-def error():
-    a = 42
-    b = 0
-    c =a/b
-    return "a / b = {c}".format(c=c)
 
 
-if __name__ 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')

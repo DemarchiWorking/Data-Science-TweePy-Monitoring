@@ -9,4 +9,6 @@ flask-sqlalchemy
 mysqlclient
 opencensus-ext-flask
 opencensus-ext-azure
+pytest
+pytest-flask
 
