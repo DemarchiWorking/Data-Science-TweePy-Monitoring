@@ -43,7 +43,10 @@ namespace ClientTweepy.Controllers
                     return Ok(new Response()
                     {
                         Title = "Nenhum usuário com seguidores foi encontrado!",
-                        Status = 204
+                        Status = 204,
+                        isEmpty = true,
+                        isSuccess = true
+                     
                     });
                 }
                 if (response.isSuccess == true)
@@ -63,7 +66,8 @@ namespace ClientTweepy.Controllers
                     return BadRequest(new Response()
                     {
                         Title = "Não foi possivel encontrar a lista de top usuários!",
-                        Status = 400
+                        Status = 400,
+                        isSuccess = false
 
                     });
                 }
@@ -94,7 +98,8 @@ namespace ClientTweepy.Controllers
                     {
                         isSuccess = true,
                         Title = "Nenhum tweet com data de criação foi encontrado!",
-                        Status = 204
+                        Status = 204,
+                        isEmpty = true
                     });
                 }
                 if (response.isSuccess == true)

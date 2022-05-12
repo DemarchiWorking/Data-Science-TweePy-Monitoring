@@ -9,6 +9,7 @@ services:
       - "5000:5000"
     networks:
       - elastic
+    restart: always
 
   db:
     image: mysql:5.7
@@ -21,6 +22,7 @@ services:
       - ./db:/docker-entrypoint-initdb.d/:ro
     networks:
       - elastic
+    restart: always
 
   api:
     build:
@@ -55,9 +57,9 @@ services:
       - node.name=elasticsearch
       - cluster.name=es-docker-cluster
       - cluster.initial_master_nodes=elasticsearch
-      #- bootstrap.memory_lock=true   #REMOVE
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#  - discovery.type=single-node
+      #- bootstrap.memory_lock=true   #REMOVE
+      #- discovery.type=single-node
     ulimits:
       memlock:
         soft: -1
@@ -68,6 +70,7 @@ services:
       - 9200:9200
     networks:
       - elastic
+    restart: always
 
   kib01:
     image: docker.elastic.co/kibana/kibana:7.9.0
@@ -83,6 +86,7 @@ services:
       - elasticsearch
     networks:
       - elastic
+    restart: always
 #    limits:
 #      - memlock: 500M
 
@@ -95,6 +99,7 @@ services:
       - "9090:9090"
     networks:
       - elastic
+    restart: always
 
   grafana:
     container_name: grafana
@@ -105,6 +110,7 @@ services:
       - prometheus
     networks:
       - elastic
+    restart: always
 
   nginx:
     build:

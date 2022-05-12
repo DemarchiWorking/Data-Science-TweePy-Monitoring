@@ -138,7 +138,7 @@ def userMostFollowers(tweets):
 def lastTweetList():
     try:
         tweetsByTag = tweetAndAuthor()
-        for tweets in tweetsByTag[:50]:
+        for tweets in tweetsByTag[:70]:
             print(tweets)
             user_info = userMostFollowers(tweets)
             if(str(user_info) == "<Response [429]>"):
@@ -169,17 +169,19 @@ def lastTweetList():
 
     return render_template("listTweetsBySuggestion.html",user_info=user_info, tweetsByTag=tweetsByTag)
 
-@app.route('/cadastrarTweet', methods=['GET', 'POST'])
+@app.route('/cadastrar-tweet', methods=['GET', 'POST'])
 def registerTweet():
-
+    try:
         if request.method == 'POST':
+            if(request.form.get('tag') == ""):
+                return render_template("error.html")
             tag = request.form.get('tag')
             initialDate = request.form.get('initialDate')
             finalDate = request.form.get('finalDate')
             result =tweetByTagAndDate(tag)
 
             #loop nos tweets com requisicao no perfil e cadastro deles no banco
-            for tweets in result[:50]:  # só pega os primeiros
+            for tweets in result[:70]:  # só pega os primeiros
                 user_info = userMostFollowers(tweets)
                 if (str(user_info) == "<Response [429]>"):
                     return redirect(url_for('many'))
@@ -208,6 +210,11 @@ def registerTweet():
 
         return render_template("registerTweet.html")
 
+    except:
+        app.logger.critical('[userMostFollowers] Exception')
+        return render_template("error.html")
+
+    return render_template("listTweetsBySuggestion.html",user_info=user_info, tweetsByTag=tweetsByTag)
 
 
 @app.route('/')
@@ -217,6 +224,7 @@ def index():
 @app.route('/contatos')
 def contact():
     return render_template("contact.html")
+
 
 @app.route('/funcoes')
 def function():

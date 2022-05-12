@@ -1,24 +1,35 @@
 import pytest
 import unittest
 
+from app import User, Tweet, app
 
-from PythonDockerFlaskPycharm.app.app import User, Tweet, app
+class TestHome(unittest.TestCase):
 
-user1 = User(1, "test", 15, 100)
-tweet1 = Tweet(1, "test", "pt", "#itau", "en", "#i")
+    def setUp(self):
+        self.client = app.test_client()
+
+    def test_get_raiz(self):
+        response = self.client.get('/')
+        self.assertEqual(200, response.status_code)
+
+    def test_content_type(self):
+        test = app.test_client()
+        response = test.get('/')
+        self.assertIn('text/html', response.content_type)
 
 
-#class TestHome(unittest.TestCase):
+    def test_get_register_tweet(self):
+        response = self.client.get('/cadastrar-tweet')
+        self.assertEqual(200, response.status_code)
+
+    def test_form(self):
+        response = self.client.get('/cadastrar-tweet')
+        response_str = response.data.decode('utf-8')
+        self.assertIn('<form', str(response_str))
+        self.assertIn('<input', str(response_str))
 
 
-def test_content_type(self):
-    self.assertIn('text/html', self.response.content_type)
-
-
-class TestFatorial(unittest.TestCase):
-
-    def test_fatorial(self):
-        self.assertEqual(1, 1)
 
 if __name__ == '__main__':
     unittest.main()
+
